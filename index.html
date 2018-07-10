@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<style>
+  .hr {
+    height: 1px;
+  }
+
+  /*
+  展示一个1px的分割线，方法一
+  ios（不支持安卓）
+  -webkit-min-device-pixl-ratio:2 二倍屏
+  -webkit-min-device-pixl-ratio:3 三倍屏    2、3倍屏幕 height:05就是一个物理像素，（3倍屏幕不用写0.3）
+   */
+
+  @media(-webkit-min-device-pixl-ratio:2) {
+    .hr {
+      height: 0.5px;
+    }
+  }
+</style>
+
+<body>
+  <hr class="hr"></hr>
+</body>
+
+</html>
+
+
+<!-- 
+展示一个细的分割线，方法二
+   background-size:100% 1px,  代表的是横向100%，纵向1px，图片是2px,但是最终压缩到了1px的高度，所以能画出比较细的线条（如果想画出更细的，可以图片的上一像素是透明的，下一像素是有颜色的，以此类推）
+
+ -->
+
+<!-- WWDC对ios 给出的方法
+  展示一个细的分割线，方法三（最佳，支持ios  安卓）
+  将伪类元素绝对定位到顶部，然后高度文1px的伪类元素在 Y 轴方向缩小0.5倍数
+  .h:agter{
+    width:100px;
+    height:1px;
+    transform:scaleY(0.5);
+    -webkit-transform:scale(0.5);
+  }
+
+  拓展：展示圆角边框（思路跟方法三一样）
+
+  .boder:after{
+    position:absolute;
+    display:block;
+    top:0;
+    left:0;
+    width:200%;
+    height:200px;
+    border:1px solid #000;
+    transform:scale(0.5);
+    -webkit-transform:scale(0.5);
+    transfrom-origin:0 0; // 以左上角为中心缩放
+    border-radius:10px;// 可以设置圆角
+
+  }
+ -->
+
+
+<!-- 
+   展示一个细的分割线，方法四（阿里用的flexible本方法）：
+    <meta name="viewport" content="width=device-width, initial-scale=0.3333333">
+    如果是三倍屏，就缩放三倍，但是这样其他元素也会变小，对应应该调整
+
+
+  -->
+
+<!-- 
+layout viewport :官方所说的viewport ,即100%的宽度会有多少个像素点----document.documentElement.clientWidth
+visual viewport :代表可是区域大小，缩放会改变可视区域----window.innerWidth---- 在不缩放的情况下，visual viewport 和layout viewport的宽度是一样的
+ideal viewport  : 理想状态下的视口。是meta 标签的device-width 指定 的宽度  ----window.screen.width
+ -->
+
+
+
+<!-- 
+  使用淘宝的flexible 库作为布局库
+  1. 字体rem = 页面宽度/10;(这样能保证页面缩放后字体也能跟着缩放)
+     弊端：口算有难度，比如经过计算后1rem 为75px,那如果要展示170px 就得2.67rem，应该使用构建工具计算
+
+  2. 当页面的ideal viewport 宽度超过540会认为是平板。
+
+  3.let width= dom.getBoundingClientRect().width；获取宽度，比通过dom.innerWidth的响应速度快 
+  4. 解决线条1px 过于粗的问题
+
+  -->
+
+  <!-- 
+    在阿里flexible 库的基础上封装解决问题
+    https://github.com/geeknull/rem-moka
+    
+   -->
